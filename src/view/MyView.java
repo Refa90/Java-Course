@@ -29,8 +29,7 @@ public class MyView extends Observable implements View, Observer {
 	 * */
 	/*private CLI cli;
 	private GUI gui;*/
-	
-	private Display display;
+	private View display;
 	
 	/**
 	 * pointer to the controller object which initializes the base logic of the program 
@@ -47,7 +46,7 @@ public class MyView extends Observable implements View, Observer {
 		//cli.addObserver(this);
 		
 		display = new GUI();
-		gui.addObserver(this);
+		display.addObserver(this);
 	}
 		
 	/**
@@ -55,10 +54,10 @@ public class MyView extends Observable implements View, Observer {
 	 * @param map - the command map
 	 * */
 
-	@Override
+	/*@Override
 	public void setCommandsMap(Map<String, Command> map){
-		cli.setCommands(map);
-	}
+		//cli.setCommands(map);
+	}*/
 		
 	/**
 	 * set the controller
@@ -76,10 +75,8 @@ public class MyView extends Observable implements View, Observer {
 	@Override
 	public void start(){
 		//this.controller.init();
-				
-		//cli.start();
 		
-		gui.start();
+		display.start();
 
 	}
 	
@@ -100,22 +97,7 @@ public class MyView extends Observable implements View, Observer {
 	 * */
 	@Override
 	public void displayDirContent(File[] files){
-		String content = "";
-		StringBuilder sb = new StringBuilder();		
-		
-		for(File obj : files){
-			sb.append(obj.getName() + " - ");
-			if(obj.isDirectory()){
-				sb.append("directroy");
-			}else if(obj.isFile()){
-				sb.append("file");
-			}
-			sb.append(" \r\n");
-		}
-		
-		content = sb.toString();
-		
-		display(content);
+		display.displayDirContent(files);
 	}
 	
 	/**
@@ -124,25 +106,7 @@ public class MyView extends Observable implements View, Observer {
 	 * */
 	@Override 
 	public void displayMaze(Maze3d maze){
-		Position config = maze.getConfiguration();
-		
-		for(int h = 0; h < config.getHeight(); h++){
-			//cli.display("\r\n");
-			display.display("\r\n");
-			for(int l = 0; l < config.getLength(); l++){
-				//cli.display("\r\n");
-				display.display("\r\n");
-				for(int w = 0; w < config.getWidth(); w++){
-					Position pos = new Position(h, l, w);
-					int value = maze.getCellValue(pos);
-					//cli.display(Integer.toString(value));
-					display.display(Integer.toString(value));
-				}	
-			}	
-		}
-		
-		//cli.display("\r\n");
-		display.display("\r\n");
+		display.displayMaze(maze);
 	}
 	
 	/**
@@ -151,8 +115,7 @@ public class MyView extends Observable implements View, Observer {
 	 * */
 	@Override
 	public void notifyGeneratingMaze(String mazeName) {
-		//cli.display("maze " + mazeName + " is being generated... \r\n");
-		display.display("maze " + mazeName + " is being generated... \r\n");
+		display.notifyGeneratingMaze(mazeName);
 		
 	}
 
@@ -162,8 +125,7 @@ public class MyView extends Observable implements View, Observer {
 	 * */
 	@Override
 	public void notifyMazeGenerated(String mazeName) {
-		//cli.display("maze " + mazeName + " is ready \r\n");
-		display.display("maze " + mazeName + " is ready \r\n");
+		display.notifyMazeGenerated(mazeName);
 		
 	}
 	
@@ -173,41 +135,17 @@ public class MyView extends Observable implements View, Observer {
 	 * */
 	@Override
 	public void displayCrossSection(byte[][] section){
-		String content = "";
-		StringBuilder stringBuilder = new StringBuilder();
-		
-		for(int r = 0; r < section.length; r++){
-			stringBuilder.append("\r\n");
-			for(int c = 0; c < section[r].length; c++){
-				stringBuilder.append(section[r][c]);
-				stringBuilder.append(" ");
-			}
-		}
-		
-		content = stringBuilder.toString();
-		
-		//cli.display(content);
-		display.display(content);
-		
+		display.displayCrossSection(section);
 	}
 	
 	@Override
 	public void notifyMazeSolutionReady(String mazeName){
-		String content = "solution for " + mazeName + " is ready \r\n";
-		
-		//cli.display(content);
-		display.display(content);
+		display.notifyMazeSolutionReady(mazeName);
 	}
 	
 	@Override
 	public void displaySolution(Solution<Position> sol){
-		
-		List<State<Position>> list = sol.getStates();
-		
-		for(State<Position> pos : list){
-			//cli.display(pos.toString() + "\r\n");
-			display.display(pos.toString() + "\r\n");
-		}
+		display.displaySolution(sol);
 	}
 	
 	@Override

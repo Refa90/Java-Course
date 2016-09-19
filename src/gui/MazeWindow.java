@@ -1,6 +1,7 @@
 package gui;
 
 import java.util.Observable;
+import java.util.concurrent.Callable;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -13,11 +14,14 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Shell;
 
 import algorithms.mazeGenerators.GrowingTreeGenerator;
 import algorithms.mazeGenerators.Maze3dGenerator;
 import algorithms.mazeGenerators.Position;
 import general.NotificationParam;
+import general.ThreadsManager;
 
 public class MazeWindow extends BaseWindow {
 
@@ -88,6 +92,10 @@ public class MazeWindow extends BaseWindow {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				System.out.println("save maze");
+				
+				SaveMazeWindow window = new SaveMazeWindow(observable);
+				
+				window.start(display);
 			}
 			
 			@Override
@@ -114,8 +122,9 @@ public class MazeWindow extends BaseWindow {
 		
 		Position configuration = new Position(4,4,4);
 		Maze3dGenerator mazeGenerator = new GrowingTreeGenerator();
+		String mazeName = "maze";
 		
-		mazeDisplay = new MazeDisplay(shell, SWT.BORDER, mazeGenerator, configuration);	
+		mazeDisplay = new MazeDisplay(shell, SWT.BORDER, mazeGenerator, configuration, mazeName);	
 		mazeDisplay.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		mazeDisplay.setFocus();
 		
@@ -190,6 +199,12 @@ public class MazeWindow extends BaseWindow {
 	    helpGetHelpItem.setText("&Get Help");
 	    
 	    shell.setMenuBar(menuBar);
+	}
+	
+	public void displayNotification(String content){
+		NotificationQueue.GetInstance().add(content);
+		
+		
 
 	}
 

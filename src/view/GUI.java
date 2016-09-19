@@ -3,16 +3,20 @@ package view;
 import java.io.File;
 import java.util.Observable;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Shell;
+
 import algorithms.mazeGenerators.Maze3d;
 import algorithms.mazeGenerators.Position;
 import algorithms.search.Solution;
 import general.Startable;
 import gui.MazeWindow;
 
-public class GUI extends Observable implements Startable, Display {
+public class GUI extends Observable implements Startable, View {
 	
 	private MazeWindow mazeWindow;
-
+	
 	@Override
 	public void start() {
 		mazeWindow = new MazeWindow(this);
@@ -28,13 +32,27 @@ public class GUI extends Observable implements Startable, Display {
 
 	@Override
 	public void display(String content) {
-		// TODO Auto-generated method stub
-		
+		mazeWindow.displayNotification(content);
 	}
 
 	@Override
 	public void displayDirContent(File[] files) {
-		// TODO Auto-generated method stub
+		String content = "";
+		StringBuilder sb = new StringBuilder();		
+		
+		for(File obj : files){
+			sb.append(obj.getName() + " - ");
+			if(obj.isDirectory()){
+				sb.append("directroy");
+			}else if(obj.isFile()){
+				sb.append("file");
+			}
+			sb.append(" \r\n");
+		}
+		
+		content = sb.toString();
+		
+		display(content);
 		
 	}
 
@@ -46,13 +64,13 @@ public class GUI extends Observable implements Startable, Display {
 
 	@Override
 	public void notifyGeneratingMaze(String mazeName) {
-		// TODO Auto-generated method stub
+		display("maze " + mazeName + " is being generated... \r\n");
 		
 	}
 
 	@Override
 	public void notifyMazeGenerated(String mazeName) {
-		// TODO Auto-generated method stub
+		display("maze " + mazeName + " is ready \r\n");
 		
 	}
 
@@ -64,13 +82,13 @@ public class GUI extends Observable implements Startable, Display {
 
 	@Override
 	public void notifyMazeSolutionReady(String mazeName) {
-		// TODO Auto-generated method stub
+		String content = "solution for " + mazeName + " is ready \r\n";
 		
+		display(content);
 	}
 
 	@Override
 	public void displaySolution(Solution<Position> sol) {
-		// TODO Auto-generated method stub
 		
 	}
 

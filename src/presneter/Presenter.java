@@ -7,6 +7,8 @@ import java.util.Observer;
 
 import general.MyObserver;
 import general.NotificationParam;
+import gui.Notification;
+import gui.NotificationQueue;
 import model.Model;
 import view.View;
 
@@ -89,23 +91,28 @@ public class Presenter implements Observer {
 		
 		String commandName = notParam.getCommandName();
 		
-		Command command = null;
-		
-		if(o instanceof View){
-			command = this.modelMap.get(commandName);
-		}else if(o instanceof Model){
-			command = this.viewMap.get(commandName);
-		}
-		
-		if(command == null){
+		if(commandName.equals("error")){
+			Notification notification = (Notification)notParam.getArg();
 			
+			NotificationQueue.GetInstance().add(notification);
 		}else{
-			try {
-				command.doCommand(notParam.getArg());
-			} catch (Exception e) {
-				e.printStackTrace();
+			Command command = null;
+			
+			if(o instanceof View){
+				command = this.modelMap.get(commandName);
+			}else if(o instanceof Model){
+				command = this.viewMap.get(commandName);
+			}
+			
+			if(command == null){
+				
+			}else{
+				try {
+					command.doCommand(notParam.getArg());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
-
 }

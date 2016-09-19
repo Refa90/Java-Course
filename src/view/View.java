@@ -10,7 +10,7 @@ import general.Startable;
 import presneter.Command;
 
 public interface View extends Startable, Display {
-	void setCommandsMap(Map<String, Command> map);
+	//void setCommandsMap(Map<String, Command> map);
 	
 	/*void display(String content);
 	

@@ -19,6 +19,8 @@ import algorithms.search.CommonSearcher;
 import algorithms.search.Solution;
 import general.NotificationParam;
 import general.ThreadsManager;
+import gui.Notification;
+import gui.NotificationQueue;
 import io.MyCompressorOutputStream;
 import io.MyDecompressionInputStream;
 
@@ -107,11 +109,17 @@ public class MyModel extends Observable implements Model {
 	public void saveMaze(String mazeName, String fileName) throws FileNotFoundException, IOException{
 		Maze3d maze = mazesMap.get(mazeName);
 		
-		byte[] bytes = maze.toByteArray();
-		
-		MyCompressorOutputStream compressor = new MyCompressorOutputStream(new FileOutputStream(new File(fileName)));
-		
-		compressor.write(bytes);
+		if(maze != null){
+			byte[] bytes = maze.toByteArray();
+			
+			MyCompressorOutputStream compressor = new MyCompressorOutputStream(new FileOutputStream(new File(fileName)));
+			
+			compressor.write(bytes);	
+		}else{
+			NotificationParam notParam = new NotificationParam(new Notification(true, "failed save maze"), "error");
+			
+			notifyObservers(notParam);
+		}
 	}
 	
 	@Override

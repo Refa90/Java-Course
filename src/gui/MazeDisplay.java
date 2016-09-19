@@ -12,6 +12,8 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Shell;
 
 import algorithms.mazeGenerators.Maze3d;
 import algorithms.mazeGenerators.Maze3dGenerator;
@@ -27,10 +29,10 @@ public class MazeDisplay extends Canvas {
 			{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1 } };
 
 	private Maze3d maze;
-
+	private String mazeName;
 	private Character character;
 
-	public MazeDisplay(Composite parent, int style, Maze3dGenerator mazeGenerator, Position mazeConfiguration) {
+	public MazeDisplay(Composite parent, int style, Maze3dGenerator mazeGenerator, Position mazeConfiguration, String mazeName) {
 		super(parent, style);
 
 		this.maze = mazeGenerator.generate(mazeConfiguration);
@@ -164,7 +166,21 @@ public class MazeDisplay extends Canvas {
 
 					@Override
 					public void run() {
-						//redraw();
+						redraw();
+						
+						Notification notification = (Notification)NotificationQueue.GetInstance().poll();
+						
+						if(notification != null){
+							MessageBox msg = new MessageBox(new Shell(), SWT.OK);
+							if(notification.getIsError()){
+								msg.setText("Error");	
+							}else{
+								msg.setText("Notification");	
+							}
+							
+							msg.setMessage(notification.getContent());
+							msg.open();	
+						}
 					}
 				});
 
