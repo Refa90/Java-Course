@@ -1,8 +1,11 @@
 package general;
 
+import java.util.Date;
+
 public class NotificationParam {
 	private Object arg;
 	private String commandName;
+	private Date date;
 	public Object getArg() {
 		return arg;
 	}
@@ -19,5 +22,6 @@ public class NotificationParam {
 	public NotificationParam(Object arg, String commandName){
 		this.arg = arg;
 		this.commandName = commandName;
-	}
+		this.date = new Date();
+	}	
 }

@@ -86,8 +86,6 @@ public class MyView extends Observable implements View, Observer {
 	 * */
 	@Override
 	public void display(String content){
-		//cli.display(content);
-		
 		display.display(content);
 	}
 	
@@ -167,5 +165,16 @@ public class MyView extends Observable implements View, Observer {
 	@Override
 	public void update(Observable o, Object arg) {
 		notifyObservers(arg);
+	}
+
+	@Override
+	public void displaySavedMaze(String mazeName, String fileName) {
+		display.displaySavedMaze(mazeName, fileName);
+	}
+
+	@Override
+	public void displayLoadMaze(String mazeName, String fileName) {
+		display("maze " + mazeName + " loaded from file " + fileName);
+		
 	}
 }

@@ -1,5 +1,7 @@
 package gui;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import java.util.concurrent.Callable;
 
@@ -18,6 +20,7 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
 import algorithms.mazeGenerators.GrowingTreeGenerator;
+import algorithms.mazeGenerators.Maze3d;
 import algorithms.mazeGenerators.Maze3dGenerator;
 import algorithms.mazeGenerators.Position;
 import general.NotificationParam;
@@ -31,6 +34,10 @@ public class MazeWindow extends BaseWindow {
 	public MazeWindow(Observable observable){
 		this.observable = observable;
 	}
+	
+	Button btnSolveMaze = null;
+	Button btnSaveMaze = null;
+	Button btnLoadMaze = null;
 	
 	@Override
 	protected void initWidgets() {
@@ -49,15 +56,14 @@ public class MazeWindow extends BaseWindow {
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
 				System.out.println("generate maze");
-				GenerateMazeWindow win = new GenerateMazeWindow(observable);				
+				List<Button> buttons = new ArrayList<>();
+				buttons.add(btnSolveMaze);
+				buttons.add(btnSaveMaze);
+				buttons.add(btnLoadMaze);
+				
+				
+				GenerateMazeWindow win = new GenerateMazeWindow(observable, buttons);				
 				win.start(display);
-				
-				/*Composite buttons2 = new Composite(shell, SWT.NONE);
-				RowLayout rowLayout = new RowLayout(SWT.VERTICAL);
-				buttons2.setLayout(rowLayout);*/
-				
-				//NotificationParam param = new NotificationParam(arg0, "generate_3d_maze");
-				//observable.notifyObservers(param);
 			}
 			
 			@Override
@@ -68,8 +74,9 @@ public class MazeWindow extends BaseWindow {
 			}
 		});
 		
-		Button btnSolveMaze = new Button(buttons, SWT.PUSH);
+		btnSolveMaze = new Button(buttons, SWT.PUSH);
 		btnSolveMaze.setText("Solve maze");
+		btnSolveMaze.setVisible(false);
 		
 		btnSolveMaze.addSelectionListener(new SelectionListener() {
 			
@@ -84,8 +91,9 @@ public class MazeWindow extends BaseWindow {
 			}
 		});
 		
-		Button btnSaveMaze = new Button(buttons, SWT.PUSH);
+		btnSaveMaze = new Button(buttons, SWT.PUSH);
 		btnSaveMaze.setText("save maze");
+		btnSaveMaze.setVisible(false);
 		
 		btnSaveMaze.addSelectionListener(new SelectionListener() {
 			
@@ -104,14 +112,19 @@ public class MazeWindow extends BaseWindow {
 			}
 		});
 		
-		Button btnLoadMaze = new Button(buttons, SWT.PUSH);
+		btnLoadMaze = new Button(buttons, SWT.PUSH);
 		btnLoadMaze.setText("load maze");
+		btnLoadMaze.setVisible(false);
 		
 		btnLoadMaze.addSelectionListener(new SelectionListener() {
 			
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				System.out.println("load maze");
+				
+				LoadMazeWindow window = new LoadMazeWindow(observable);
+				
+				window.start(display);
 			}
 			
 			@Override
@@ -124,7 +137,7 @@ public class MazeWindow extends BaseWindow {
 		Maze3dGenerator mazeGenerator = new GrowingTreeGenerator();
 		String mazeName = "maze";
 		
-		mazeDisplay = new MazeDisplay(shell, SWT.BORDER, mazeGenerator, configuration, mazeName);	
+		mazeDisplay = new MazeDisplay(shell, SWT.BORDER/*, mazeGenerator.generate(configuration) null*/);	
 		mazeDisplay.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		mazeDisplay.setFocus();
 		
@@ -202,11 +215,12 @@ public class MazeWindow extends BaseWindow {
 	}
 	
 	public void displayNotification(String content){
-		NotificationQueue.GetInstance().add(content);
-		
-		
-
+		Notification notification = new Notification(false, content);
+		NotificationQueue.GetInstance().add(notification);
 	}
-
+	
+	public void updateMaze(Maze3d maze){
+		this.mazeDisplay.setMaze(maze);
+	}
 }
 

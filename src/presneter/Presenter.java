@@ -47,6 +47,10 @@ public class Presenter implements Observer {
 			
 		map.put("viewDisplayMazeSolution", new ViewDisplayMazeSolutionCommand(this.view));
 		
+		map.put("viewSaveMaze", new ViewSaveMazeCommand(this.view));
+		
+		map.put("viewLoadMaze", new ViewLoadMazeCommand(this.view));
+		
 		this.viewMap = map;
 	}
 	

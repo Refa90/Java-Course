@@ -174,4 +174,14 @@ public class CLI extends Observable implements Startable, View {
 		}
 		
 	}
+
+	@Override
+	public void displaySavedMaze(String mazeName, String fileName) {
+		display("saved maze " + mazeName + " to file " + fileName);
+	}
+
+	@Override
+	public void displayLoadMaze(String mazeName, String fileName) {
+		display("maze " + mazeName + " loaded from file " + fileName);
+	}
 }

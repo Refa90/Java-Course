@@ -12,6 +12,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
 import algorithms.demo.Maze3dSearchableAdapter;
+import algorithms.mazeGenerators.GrowingTreeGenerator;
 import algorithms.mazeGenerators.Maze3d;
 import algorithms.mazeGenerators.Maze3dGenerator;
 import algorithms.mazeGenerators.Position;
@@ -20,7 +21,6 @@ import algorithms.search.Solution;
 import general.NotificationParam;
 import general.ThreadsManager;
 import gui.Notification;
-import gui.NotificationQueue;
 import io.MyCompressorOutputStream;
 import io.MyDecompressionInputStream;
 
@@ -29,66 +29,80 @@ public class MyModel extends Observable implements Model {
 	private Map<String, Maze3d> mazesMap;
 	private Map<Maze3d, Solution<Position>> mazeSols;
 	private CommonSearcher<Position> searcher;
-	
-	public MyModel(){
+	private String ioPath;
+
+	public MyModel() {
 		this.mazesMap = new HashMap<>();
 		this.mazeSols = new HashMap<>();
+
+		String mazesFolderName = "mazes";
+		ioPath = System.getProperty("user.dir") + "\\" + mazesFolderName;
+
+		File file = new File(ioPath);
+
+		if (!file.exists()) {
+			file.mkdir();
+		}
 	}
 
 	@Override
-	public void getDirContent(String path) throws IOException{
+	public void getDirContent(String path) throws IOException {
 		File[] files = null;
-		
+
 		File folder = new File(path);
-		
+
 		files = folder.listFiles();
-		
-		NotificationParam param = new NotificationParam(files, "viewDir"); 
-		
+
+		NotificationParam param = new NotificationParam(files, "viewDir");
+
 		notifyObservers(param);
 	}
-	
+
 	@Override
-	public void generate3dMaze(Maze3dGenerator generator, Position configuration, String mazeName){
-		NotificationParam param = new NotificationParam(mazeName, "viewGenerating3dMaze"); 
-		
+	public void generate3dMaze(Maze3dGenerator generator, Position configuration, String mazeName) {
+		NotificationParam param = new NotificationParam(mazeName, "viewGenerating3dMaze");
+
 		notifyObservers(param);
-		
+
 		Callable<Maze3d> callable = new Callable<Maze3d>() {
-			
+
 			@Override
 			public Maze3d call() throws Exception {
 				Maze3d maze = generator.generate(configuration);
-				
+
 				mazesMap.put(mazeName, maze);
-				
-				NotificationParam param = new NotificationParam(mazeName, "viewGenerated3dMaze"); 
-				
+
+				NotificationParam param = new NotificationParam(mazeName, "viewGenerated3dMaze");
+
 				notifyObservers(param);
-				
+
+				param = new NotificationParam(maze, "viewDisplayMaze");
+
+				notifyObservers(param);
+
 				return maze;
-			}	
+			}
 		};
-		
+
 		Future<Maze3d> future = ThreadsManager.getInstance().RegisterCallable(callable);
 	}
-	
+
 	@Override
-	public void displayMaze(String mazeName){
+	public void displayMaze(String mazeName) {
 		Maze3d maze = mazesMap.get(mazeName);
-		
-		NotificationParam param = new NotificationParam(mazeName, "viewDisplayMaze"); 
-		
+
+		NotificationParam param = new NotificationParam(mazeName, "viewDisplayMaze");
+
 		notifyObservers(param);
 	}
-	
+
 	@Override
-	public void displayCrossSection(String axis, int value, String mazeName){
+	public void displayCrossSection(String axis, int value, String mazeName) {
 		Maze3d maze = mazesMap.get(mazeName);
-		
+
 		byte[][] mazeInBytes = null;
-		
-		switch(axis){
+
+		switch (axis) {
 		case "z":
 			mazeInBytes = maze.getCrossSectionByZ(value);
 			break;
@@ -99,115 +113,148 @@ public class MyModel extends Observable implements Model {
 			mazeInBytes = maze.getCrossSectionByX(value);
 			break;
 		}
-		
-		NotificationParam param = new NotificationParam(mazeInBytes, "viewDisplayCrossSection"); 
-		
+
+		NotificationParam param = new NotificationParam(mazeInBytes, "viewDisplayCrossSection");
+
 		notifyObservers(param);
 	}
-	
+
 	@Override
-	public void saveMaze(String mazeName, String fileName) throws FileNotFoundException, IOException{
-		Maze3d maze = mazesMap.get(mazeName);
-		
-		if(maze != null){
+	public void saveMaze(String mazeName, String fileName) throws FileNotFoundException, IOException {
+		try {
+			Maze3d maze = mazesMap.get(mazeName);
+
+			// TODO - remove!
+			if (maze == null) {
+				Maze3dGenerator generator = new GrowingTreeGenerator();
+				maze = generator.generate(new Position(3, 3, 3));
+			}
+
 			byte[] bytes = maze.toByteArray();
-			
-			MyCompressorOutputStream compressor = new MyCompressorOutputStream(new FileOutputStream(new File(fileName)));
-			
-			compressor.write(bytes);	
-		}else{
-			NotificationParam notParam = new NotificationParam(new Notification(true, "failed save maze"), "error");
-			
+
+			File file = new File(this.ioPath + "\\" + fileName);
+
+			MyCompressorOutputStream compressor = new MyCompressorOutputStream(new FileOutputStream(file));
+
+			compressor.write(bytes);
+
+			NotificationParam notParam = new NotificationParam(new String[] { mazeName, fileName }, "viewSaveMaze");
+
+			notifyObservers(notParam);
+		} catch (Exception ex) {
+			NotificationParam notParam = new NotificationParam(
+					new Notification(true, "failed save maze " + mazeName + " from file " + fileName), "error");
+
 			notifyObservers(notParam);
 		}
 	}
-	
+
 	@Override
-	public void loadMaze(String mazeName, String fileName) throws FileNotFoundException, IOException{
-		
-		//TODO fix it!
-		
-		Maze3d maze = null;
-		
-		byte[] bytes = null;
-		
-		MyDecompressionInputStream decompressor = new MyDecompressionInputStream(new FileInputStream(new File(fileName)));
-		
-		bytes = String.valueOf(decompressor.read()).getBytes();
-		
-		maze = new Maze3d(bytes); 
-		
-		mazesMap.put(mazeName, maze);
+	public void loadMaze(String mazeName, String fileName) throws FileNotFoundException, IOException {
+
+		// TODO fix it!
+
+		try {
+			Maze3d maze = null;
+
+			/*
+			 * byte[] bytes = null;
+			 * 
+			 * MyDecompressionInputStream decompressor = new
+			 * MyDecompressionInputStream(new FileInputStream(new
+			 * File(fileName)));
+			 * 
+			 * bytes = String.valueOf(decompressor.read()).getBytes();
+			 * 
+			 * maze = new Maze3d(bytes);
+			 */
+
+			// TODO - remove!
+			if (maze == null) {
+				Maze3dGenerator generator = new GrowingTreeGenerator();
+				maze = generator.generate(new Position(3, 3, 3));
+			}
+
+			mazesMap.put(mazeName, maze);
+
+			NotificationParam notParam = new NotificationParam(new String[] { mazeName, fileName }, "viewLoadMaze");
+
+			notifyObservers(notParam);
+		} catch (Exception ex) {
+			NotificationParam notParam = new NotificationParam(
+					new Notification(true, "failed load maze " + mazeName + " from file " + fileName), "error");
+
+			notifyObservers(notParam);
+		}
 	}
-	
-	@Override 
-	public void solve(String mazeName, CommonSearcher searcher){
+
+	@Override
+	public void solve(String mazeName, CommonSearcher searcher) {
 		this.searcher = searcher;
-		
+
 		Maze3d maze = mazesMap.get(mazeName);
-		
+
 		Solution<Position> sol = mazeSols.get(maze);
-		
-		if(sol == null){
-			Callable<Solution> callable = new Callable<Solution>(){
-				
+
+		if (sol == null) {
+			Callable<Solution> callable = new Callable<Solution>() {
+
 				@Override
-				public Solution call(){
+				public Solution call() {
 					Maze3d maze = mazesMap.get(mazeName);
-					
+
 					Maze3dSearchableAdapter adapter = new Maze3dSearchableAdapter(maze);
-									
+
 					Solution sol = searcher.search(adapter);
-					
-					mazeSols.put(maze,  sol);
-					
-					NotificationParam param = new NotificationParam(mazeName, "viewSolveMazeReady"); 
-					
+
+					mazeSols.put(maze, sol);
+
+					NotificationParam param = new NotificationParam(mazeName, "viewSolveMazeReady");
+
 					notifyObservers(param);
-					
+
 					return sol;
 				}
 			};
-			
+
 			Future<Solution> future = ThreadsManager.getInstance().RegisterCallable(callable);
-		}else{
-			NotificationParam param = new NotificationParam(mazeName, "viewSolveMazeReady"); 
-			
+		} else {
+			NotificationParam param = new NotificationParam(mazeName, "viewSolveMazeReady");
+
 			notifyObservers(param);
 		}
 	}
-	
-	
-	//TODO - fix !
+
+	// TODO - fix !
 	@Override
-	public void displaySolution(String mazeName){
+	public void displaySolution(String mazeName) {
 		Maze3d maze = mazesMap.get(mazeName);
-		
+
 		Solution<Position> sol = mazeSols.get(maze);
-		
-		if(sol == null){
+
+		if (sol == null) {
 			Maze3dSearchableAdapter adapter = new Maze3dSearchableAdapter(maze);
-			
-			sol = this.searcher.search(adapter);	
+
+			sol = this.searcher.search(adapter);
 		}
-			
-		NotificationParam param = new NotificationParam(sol, "viewDisplayMazeSolution"); 
-		
+
+		NotificationParam param = new NotificationParam(sol, "viewDisplayMazeSolution");
+
 		notifyObservers(param);
 	}
-	
+
 	@Override
-	public void terminate(){
+	public void terminate() {
 		ThreadsManager.getInstance().terminate();
-		
-		//controller.terminate();
+
+		// controller.terminate();
 	}
-	
+
 	/**
 	 * model to presenter
-	 * */
+	 */
 	@Override
-	public void notifyObservers(Object arg){
+	public void notifyObservers(Object arg) {
 		super.setChanged();
 		super.notifyObservers(arg);
 	}

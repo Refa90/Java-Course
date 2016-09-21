@@ -4,13 +4,16 @@ import java.io.File;
 import java.util.Observable;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
 import algorithms.mazeGenerators.Maze3d;
+import algorithms.mazeGenerators.Maze3dGenerator;
 import algorithms.mazeGenerators.Position;
 import algorithms.search.Solution;
 import general.Startable;
+import gui.MazeDisplay;
 import gui.MazeWindow;
 
 public class GUI extends Observable implements Startable, View {
@@ -58,8 +61,7 @@ public class GUI extends Observable implements Startable, View {
 
 	@Override
 	public void displayMaze(Maze3d maze) {
-		// TODO Auto-generated method stub
-		
+		mazeWindow.updateMaze(maze);
 	}
 
 	@Override
@@ -96,6 +98,16 @@ public class GUI extends Observable implements Startable, View {
 	public void terminate() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void displaySavedMaze(String mazeName, String fileName) {
+		display("saved maze " + mazeName + " to file " + fileName);
+	}
+
+	@Override
+	public void displayLoadMaze(String mazeName, String fileName) {
+		display("maze " + mazeName + " loaded from file " + fileName);
 	}
 
 }

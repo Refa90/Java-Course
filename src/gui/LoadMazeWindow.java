@@ -13,11 +13,11 @@ import org.eclipse.swt.widgets.Text;
 
 import general.NotificationParam;
 
-public class SaveMazeWindow extends DialogWindow {
+public class LoadMazeWindow extends DialogWindow {
 
 	private Observable observable;
 	
-	public SaveMazeWindow (Observable o){
+	public LoadMazeWindow (Observable o){
 		this.observable = o;
 	}
 	
@@ -27,11 +27,11 @@ public class SaveMazeWindow extends DialogWindow {
 	
 	@Override
 	protected void initWidgets() {
-		shell.setText("Save maze window");
+		shell.setText("Load maze window");
 		shell.setSize(300, 200);		
 				
 		shell.setLayout(new GridLayout(2, false));	
-				
+		
 		Label lblFileName = new Label(shell, SWT.NONE);
 		lblFileName.setText("File name: ");
 		
@@ -43,11 +43,11 @@ public class SaveMazeWindow extends DialogWindow {
 		
 		Text txtMazeName = new Text(shell, SWT.BORDER);
 		txtMazeName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-			
+		
 		Button btnSaveMaze = new Button(shell, SWT.PUSH);
 		shell.setDefaultButton(btnSaveMaze);
 		btnSaveMaze.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1));
-		btnSaveMaze.setText("save maze");
+		btnSaveMaze.setText("load maze");
 		
 		btnSaveMaze.addSelectionListener(new SelectionListener() {
 			@Override
@@ -56,12 +56,12 @@ public class SaveMazeWindow extends DialogWindow {
 				String mazeName = txtMazeName.getText();
 				
 				String[] params = new String[]{
-					"save_maze",
+					"load_maze",
 					mazeName,
 					fileName
 				};
 				
-				NotificationParam noParam = new NotificationParam(params, "save_maze"); 
+				NotificationParam noParam = new NotificationParam(params, "load_maze"); 
 				
 				note(noParam);
 				

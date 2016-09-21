@@ -1,4 +1,5 @@
 package gui;
+import java.util.List;
 import java.util.Observable;
 
 import org.eclipse.swt.SWT;
@@ -20,9 +21,11 @@ import general.NotificationParam;
 public class GenerateMazeWindow extends DialogWindow {
 	
 	private Observable observable;
+	private List<Button> buttons;
 	
-	public GenerateMazeWindow (Observable observable){
+	public GenerateMazeWindow (Observable observable, List<Button> buttons){
 		this.observable = observable;
+		this.buttons = buttons;
 	}
 	
 	private void note(Object arg){
@@ -76,10 +79,6 @@ public class GenerateMazeWindow extends DialogWindow {
 			
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {				
-				//MessageBox msg = new MessageBox(shell, SWT.OK);
-				//msg.setText("Title");
-				//msg.setMessage("Button was clicked");
-				
 				int rows = Integer.parseInt(txtRows.getText());
 				int cols = Integer.parseInt(txtCols.getText());
 				int height = Integer.parseInt(txtHeight.getText());
@@ -98,15 +97,13 @@ public class GenerateMazeWindow extends DialogWindow {
 				
 				NotificationParam notifyParam = new NotificationParam(params, command); 
 				
-				//msg.setMessage("Generating maze with rows: " + rows + " cols: " + cols);
-				
-				//msg.open();
-				
 				note(notifyParam);
 				
+				for(Button button : buttons){
+					button.setVisible(true);
+				}		
+				
 				shell.close();
-				
-				
 			}
 			
 			@Override

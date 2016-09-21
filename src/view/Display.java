@@ -20,6 +20,10 @@ public interface Display {
 	
 	void notifyMazeGenerated(String mazeName);
 	
+	void displaySavedMaze(String mazeName, String fileName);
+	
+	void displayLoadMaze(String mazeName, String fileName);
+	
 	void displayCrossSection(byte[][] section);
 	
 	void notifyMazeSolutionReady(String mazeName);
