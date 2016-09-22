@@ -75,7 +75,7 @@ public class MyModel extends Observable implements Model {
 				NotificationParam param = new NotificationParam(mazeName, "viewGenerated3dMaze");
 
 				notifyObservers(param);
-
+				
 				param = new NotificationParam(maze, "viewDisplayMaze");
 
 				notifyObservers(param);

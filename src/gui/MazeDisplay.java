@@ -21,12 +21,14 @@ import algorithms.mazeGenerators.Position;
 
 public class MazeDisplay extends Canvas {
 
-	private int[][] mazeData = { { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+	/*private int[][] mazeData = { { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
 			{ 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 1 }, { 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1 },
 			{ 1, 1, 1, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1 }, { 1, 0, 1, 0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 1 },
 			{ 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1 }, { 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 1 },
 			{ 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1 }, { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1 },
-			{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1 } };
+			{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1 } };*/
+	
+	private static byte[][] mazeData;
 
 	private static Maze3d maze;
 	private static int currentHeight;
@@ -35,7 +37,13 @@ public class MazeDisplay extends Canvas {
 	
 	public void setMaze(Maze3d maze){
 		MazeDisplay.maze = maze;
+		maze.print();
+		//int height = maze.getStartPosition().getHeight() == 0 ? 0 : maze.getStartPosition().getHeight() + 1;
+		MazeDisplay.mazeData = maze.getCrossSectionByZ(maze.getStartPosition().getHeight());  
 		MazeDisplay.currentHeight = maze.getStartPosition().getHeight();
+		Position startPos = maze.getStartPosition();
+		System.out.println("start pos: " + startPos);
+		character.setPos(new Position(startPos.getHeight(), startPos.getLength(), startPos.getWidth()));
 	}
 
 	public MazeDisplay(Composite parent, int style) {
@@ -44,7 +52,7 @@ public class MazeDisplay extends Canvas {
 		//maze.print();
 
 		character = new Character();
-		character.setPos(new Position(1, 1, 1));
+		
 
 		this.addKeyListener(new KeyListener() {
 
@@ -70,11 +78,19 @@ public class MazeDisplay extends Canvas {
 				case SWT.ARROW_DOWN:
 					character.moveBackward();
 					break;
+					//w
 				case 119:
 					character.moveUp();
+					//store current location - raise height
+					//paint new like maze
+					//position charatcer in correct place
 					break;
+					//s
 				case 115:
 					character.moveDown();
+					//store current location - decrease height
+					//paint new like maze
+					//position charatcer in correct place
 					break;
 				}
 
@@ -83,13 +99,15 @@ public class MazeDisplay extends Canvas {
 		});
 
 		this.addPaintListener(new PaintListener() {
-
+			//Boolean isFirstRun = true;
 			@Override
 			public void paintControl(PaintEvent e) {
-				System.out.println("in paint..");
+				//System.out.println("in paint..");
 				
-				if(MazeDisplay.maze != null){
-					Display display = Display.getCurrent();
+				if(MazeDisplay.mazeData != null){
+					
+					
+					/*Display display = Display.getCurrent();
 					Color blue = display.getSystemColor(SWT.COLOR_BLUE);
 					Color white = display.getSystemColor(SWT.COLOR_WHITE);
 					Color black = display.getSystemColor(SWT.COLOR_BLACK);
@@ -114,7 +132,7 @@ public class MazeDisplay extends Canvas {
 
 					/////////////////////////////////////////////////////
 
-					int scrennWidth = getSize().x;
+					/*int scrennWidth = getSize().x;
 					int screenHeight = getSize().y;
 
 					int squareWidth = (scrennWidth / (((maze.getConfiguration().getWidth() / 2) + 1)));
@@ -122,22 +140,16 @@ public class MazeDisplay extends Canvas {
 
 					int  l = 0;
 
-					//for (int l = 0; l < maze.getConfiguration().getLength(); l++) {
 						int x = 0;
 						int y = 0;
 						for (int w = 0; w < maze.getConfiguration().getWidth(); w++) {
 
 							Position pos = new Position(MazeDisplay.currentHeight, l, w);
-
-							// int x = w * squareWidth;
-							// int y = l * squareLength;
 							
 							e.gc.drawText("w: " + String.valueOf(w) + ", l: " + String.valueOf(l), x, style);
 
 							if (maze.getCellValue(pos) == 0) {
 								if (l % 2 != 0 || w % 2 != 0) {
-									// e.gc.setBackground(blue);
-									// e.gc.setBackground(green);
 									e.gc.setForeground(green);
 									e.gc.drawLine(x, y, x, y + squareLength * 2);
 								} else {
@@ -158,9 +170,55 @@ public class MazeDisplay extends Canvas {
 								}
 							}
 						}
-					//}
+						e.gc.setForeground(new Color(null, 0, 0, 0));
+						e.gc.setBackground(new Color(null, 0, 0, 0));
+
+						int width = getSize().x;
+						int height = getSize().y;
+
+						int w = width / mazeData[0].length;
+						int h = height / mazeData.length;
+
+						for (int i = 0; i < mazeData.length; i++)
+							for (int j = 0; j < mazeData[i].length; j++) {
+								int x = j * w;
+								int y = i * h;
+								if (mazeData[i][j] != 0)
+									e.gc.fillRectangle(x, y, w, h);
+							}
+
+						character.draw(w, h, e.gc);
 					
-					character.draw(squareWidth, squareLength, e.gc);
+					character.draw(squareWidth, squareLength, e.gc);*/
+					
+					e.gc.setForeground(new Color(null, 0, 0, 0));
+					e.gc.setBackground(new Color(null, 0, 0, 0));
+
+					int width = getSize().x;
+					int height = getSize().y;
+
+					int w = width / mazeData[0].length;
+					int h = height / mazeData.length;
+
+					for (int i = 0; i < mazeData.length; i++)
+						for (int j = 0; j < mazeData[i].length; j++) {
+							int x = j * w;
+							int y = i * h;
+							if (mazeData[i][j] != 0)
+								e.gc.fillRectangle(x, y, w, h);
+						}
+
+					//character.draw(w, h, e.gc);
+					
+					/*if(isFirstRun){
+						character.draw(MazeDisplay.maze.getStartPosition().getWidth(), MazeDisplay.maze.getStartPosition().getLength(), e.gc);
+					}else{*/
+						character.draw(w, h, e.gc);
+						/*character.draw(MazeDisplay.maze.getStartPosition().getWidth(), MazeDisplay.maze.getStartPosition().getLength(), e.gc);
+					}*/
+					
+					
+					//isFirstRun = false;
 				}
 			}
 		});
@@ -175,7 +233,7 @@ public class MazeDisplay extends Canvas {
 					public void run() {
 						redraw();
 						
-						Notification notification = (Notification)NotificationQueue.GetInstance().poll();
+						/*Notification notification = (Notification)NotificationQueue.GetInstance().poll();
 						
 						if(notification != null){
 							MessageBox msg = new MessageBox(new Shell(), SWT.OK);
@@ -187,7 +245,7 @@ public class MazeDisplay extends Canvas {
 							
 							msg.setMessage(notification.getContent());
 							msg.open();	
-						}
+						}*/
 					}
 				});
 

@@ -62,6 +62,8 @@ public class GUI extends Observable implements Startable, View {
 	@Override
 	public void displayMaze(Maze3d maze) {
 		mazeWindow.updateMaze(maze);
+		byte[][] startSection = maze.getCrossSectionByZ(maze.getStartPosition().getHeight());
+		displayCrossSection(startSection);
 	}
 
 	@Override
@@ -78,7 +80,7 @@ public class GUI extends Observable implements Startable, View {
 
 	@Override
 	public void displayCrossSection(byte[][] section) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
