@@ -1,5 +1,8 @@
 package gui;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -12,20 +15,22 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Shell;
 
 import algorithms.mazeGenerators.Maze3d;
-import algorithms.mazeGenerators.Maze3dGenerator;
 import algorithms.mazeGenerators.Position;
+import algorithms.search.Solution;
+import algorithms.search.State;
 
 public class MazeDisplay extends Canvas {
 	private static byte[][] mazeData;
 
 	private static Maze3d maze;
 	private static int currentHeight;
+	private static Boolean displaySolution = false;
 	private String mazeName;
 	private Character character;
+	private static Solution<Position> sol;
+	//private Set<Position> solPosSet;
 
 	public void setMaze(Maze3d maze) {
 		MazeDisplay.maze = maze;
@@ -38,6 +43,17 @@ public class MazeDisplay extends Canvas {
 		System.out.println("start pos: " + startPos);
 		System.out.println("goal pos: " + goalPos);
 		character.setPos(new Position(startPos.getHeight(), startPos.getLength(), startPos.getWidth()));
+	}
+	
+	public void setMazeSolution(Solution sol){
+		MazeDisplay.sol = sol;
+		MazeDisplay.displaySolution = true;
+		
+		List<State> states = sol.getStates();
+		for(State<Position> state : states){
+			Position pos = state.getValue();
+			System.out.println("solution : " + pos);
+		}	
 	}
 
 	public MazeDisplay(Composite parent, int style) {
@@ -130,9 +146,10 @@ public class MazeDisplay extends Canvas {
 
 			@Override
 			public void paintControl(PaintEvent e) {
-
+				
 				if (MazeDisplay.mazeData != null) {
 					Display display = Display.getCurrent();
+					
 					Color blue = display.getSystemColor(SWT.COLOR_BLUE);
 					Color white = display.getSystemColor(SWT.COLOR_WHITE);
 					Color black = display.getSystemColor(SWT.COLOR_BLACK);
@@ -156,7 +173,7 @@ public class MazeDisplay extends Canvas {
 							int x = j * w;
 							int y = i * h;
 							Position currPosition = new Position(MazeDisplay.currentHeight, i, j);
-							// System.out.println("cuu pos: " + currPosition);
+							
 							if (MazeDisplay.maze.getCellValue(currPosition) == 0) {
 
 								Position higherPos = new Position(currPosition);
@@ -201,8 +218,35 @@ public class MazeDisplay extends Canvas {
 
 							e.gc.fillRectangle(x, y, w, h);
 
+							if(MazeDisplay.displaySolution){
+								for(State<Position> state: sol.getStates()){
+									Position pos = state.getCameFrom().getValue();
+									if(currPosition.equals(pos)){
+										System.out.println("solution position...");
+										Position nextStep = state.getValue();
+										String direction = "";
+										if(nextStep.getHeight() > pos.getHeight()){
+											direction = "higher";
+										}else if(nextStep.getHeight() < pos.getHeight()){
+											direction = "lower";
+										}else if(nextStep.getLength() > pos.getLength()){
+											direction = "up";
+										}else if(nextStep.getLength() < pos.getLength()){
+											direction = "down";
+										}else if(nextStep.getWidth() > pos.getWidth()){
+											direction = "right";
+										}else if(nextStep.getWidth() < pos.getWidth()){
+											direction = "left";
+										}
+										
+										MazeWindow.SetNextStep(direction);
+									}
+								}
+							} 
 						}
 					}
+					
+					
 
 					character.draw(w, h, e.gc);
 				}

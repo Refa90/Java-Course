@@ -23,6 +23,7 @@ import algorithms.mazeGenerators.GrowingTreeGenerator;
 import algorithms.mazeGenerators.Maze3d;
 import algorithms.mazeGenerators.Maze3dGenerator;
 import algorithms.mazeGenerators.Position;
+import algorithms.search.Solution;
 import general.NotificationParam;
 import general.ThreadsManager;
 
@@ -32,6 +33,7 @@ public class MazeWindow extends BaseWindow {
 	private Observable observable;
 	private String mazeName;
 	
+	
 	public MazeWindow(Observable observable){
 		this.observable = observable;
 	}
@@ -39,10 +41,21 @@ public class MazeWindow extends BaseWindow {
 	Button btnSolveMaze = null;
 	Button btnSaveMaze = null;
 	Button btnLoadMaze = null;
-	Button btnDisplayMazeSolution;
+	Button btnDisplayMazeSolution = null;
+	private static Label lblNextStep = null;
+	
 	
 	@Override
 	protected void initWidgets() {
+		
+		/*Composite solution = new Composite(shell, SWT.NONE);
+		RowLayout rowLayoutHorizontal = new RowLayout(SWT.HORIZONTAL);
+		solution.setLayout(rowLayoutHorizontal);
+		solution.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_CENTER));
+		
+		Button x = new Button(solution, SWT.PUSH);
+		x.setText("solution");*/
+		
 		GridLayout grid = new GridLayout(2, false);
 		shell.setLayout(grid);
 		
@@ -161,11 +174,16 @@ public class MazeWindow extends BaseWindow {
 			}
 		});
 		
-		Position configuration = new Position(4,4,4);
-		Maze3dGenerator mazeGenerator = new GrowingTreeGenerator();
-		String mazeName = "maze";
+		Label lblSolution = new Label(buttons, SWT.PUSH);
+		lblSolution.setText("Solution next step:");
+		lblSolution.setBounds(shell.getClientArea());
+	    
+	    lblNextStep = new Label(buttons, SWT.PUSH);
+	    lblNextStep.setText("Go left!");
+	    lblNextStep.setBounds(shell.getClientArea());
+	    //lblNextStep.setLayoutData((new GridData(SWT.FILL, SWT.CENTER, true, false)));
 		
-		mazeDisplay = new MazeDisplay(shell, SWT.BORDER/*, mazeGenerator.generate(configuration) null*/);	
+		mazeDisplay = new MazeDisplay(shell, SWT.BORDER);	
 		mazeDisplay.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		mazeDisplay.setFocus();
 		
@@ -247,8 +265,16 @@ public class MazeWindow extends BaseWindow {
 		NotificationQueue.GetInstance().add(notification);
 	}
 	
+	public void displaySolution(Solution<Position> sol){
+		this.mazeDisplay.setMazeSolution(sol);
+	}
+	
 	public void updateMaze(Maze3d maze){
 		this.mazeDisplay.setMaze(maze);
+	}
+	
+	public static void SetNextStep(String direction){
+		lblNextStep.setText("Go " + direction + "!");
 	}
 }
 
