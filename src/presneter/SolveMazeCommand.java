@@ -18,23 +18,12 @@ public class SolveMazeCommand implements Command {
 	
 	@Override
 	public void doCommand(Object param) throws Exception {
-		String[] params = (String[])param;
+		Object[] params = (Object[])param;
 		
-		String mazeName = params[1];
-		int algorithmId = Integer.parseInt(params[2]);
-		CommonSearcher searcher = null;
+		String mazeName = params[0].toString();
+		
+		CommonSearcher searcher = (CommonSearcher)params[1];
 				
-		switch(algorithmId){
-		case 0:
-			searcher = new BFS<Position>();
-			break;
-		case 1:
-			searcher = new DFS<Position>();
-			break;
-		default:
-			throw new Exception("bad algorithm input");
-		}
-		
 		model.solve(mazeName, searcher);
 		
 	}

@@ -49,12 +49,12 @@ public class Character {
 	}
 	
 	public void moveUp(){
-		pos.setHeight(pos.getHeight() - 1);
+		pos.setHeight(pos.getHeight() + 1);
 		System.out.println("move up");
 	}
 	
 	public void moveDown(){
-		pos.setHeight(pos.getHeight() + 1);
+		pos.setHeight(pos.getHeight() - 1);
 		System.out.println("move down");
 	}
 	

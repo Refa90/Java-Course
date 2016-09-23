@@ -30,6 +30,7 @@ public class MazeWindow extends BaseWindow {
 
 	private MazeDisplay mazeDisplay;
 	private Observable observable;
+	private String mazeName;
 	
 	public MazeWindow(Observable observable){
 		this.observable = observable;
@@ -38,6 +39,7 @@ public class MazeWindow extends BaseWindow {
 	Button btnSolveMaze = null;
 	Button btnSaveMaze = null;
 	Button btnLoadMaze = null;
+	Button btnDisplayMazeSolution;
 	
 	@Override
 	protected void initWidgets() {
@@ -57,10 +59,10 @@ public class MazeWindow extends BaseWindow {
 			public void widgetSelected(SelectionEvent arg0) {
 				System.out.println("generate maze");
 				List<Button> buttons = new ArrayList<>();
-				buttons.add(btnSolveMaze);
 				buttons.add(btnSaveMaze);
 				buttons.add(btnLoadMaze);
-				
+				buttons.add(btnSolveMaze);
+				buttons.add(btnDisplayMazeSolution);
 				
 				GenerateMazeWindow win = new GenerateMazeWindow(observable, buttons);				
 				win.start(display);
@@ -83,6 +85,8 @@ public class MazeWindow extends BaseWindow {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				System.out.println("solve maze");
+				SolveMazeWindow window = new SolveMazeWindow(observable, mazeName);
+				window.start(display);
 			}
 			
 			@Override
@@ -90,6 +94,30 @@ public class MazeWindow extends BaseWindow {
 
 			}
 		});
+		
+		btnDisplayMazeSolution = new Button(buttons, SWT.PUSH);
+		btnDisplayMazeSolution.setText("Display Maze solution guidance");
+		btnDisplayMazeSolution.setVisible(false);
+		
+		btnDisplayMazeSolution.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				System.out.println("display maze solution");
+				
+				String mazeName = "maze";
+				
+				NotificationParam noteParam = new NotificationParam(mazeName, "display_solution" );
+				
+				observable.notifyObservers(noteParam);
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+
+			}
+		});
+		
 		
 		btnSaveMaze = new Button(buttons, SWT.PUSH);
 		btnSaveMaze.setText("save maze");

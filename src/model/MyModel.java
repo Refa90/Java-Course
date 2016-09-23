@@ -208,7 +208,7 @@ public class MyModel extends Observable implements Model {
 					Solution sol = searcher.search(adapter);
 
 					mazeSols.put(maze, sol);
-
+					
 					NotificationParam param = new NotificationParam(mazeName, "viewSolveMazeReady");
 
 					notifyObservers(param);

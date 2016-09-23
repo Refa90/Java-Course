@@ -93,7 +93,7 @@ public class GUI extends Observable implements Startable, View {
 
 	@Override
 	public void displaySolution(Solution<Position> sol) {
-		
+		System.out.println("display view maze solution..");
 	}
 
 	@Override

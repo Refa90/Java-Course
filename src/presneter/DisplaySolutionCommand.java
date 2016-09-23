@@ -11,10 +11,7 @@ public class DisplaySolutionCommand implements Command {
 	}
 	
 	@Override public void doCommand(Object param) throws Exception{
-		String[] params = (String[])param;
-		
-		String mazeName = params[1];
-		
+		String mazeName = param.toString();
 		
 		model.displaySolution(mazeName);
 	}
