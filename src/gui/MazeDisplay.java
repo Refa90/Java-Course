@@ -36,6 +36,7 @@ public class MazeDisplay extends Canvas {
 	private static Solution<Position> sol;
 	private static Boolean freezeMaze = false;
 	private static String step = "";
+	private int spacing = 2;
 
 	public void setMaze(Maze3d maze) {
 		MazeDisplay.maze = maze;
@@ -80,31 +81,31 @@ public class MazeDisplay extends Canvas {
 				
 				if (!MazeDisplay.freezeMaze) {
 					int nextIndex;
-					Position pos = character.getPos();
+					Position pos = character.getRealPos();
 					Position newPos = new Position(pos);
 					switch (e.keyCode) {
 					case SWT.ARROW_RIGHT:
-						nextIndex = pos.getWidth() + 1;
+						nextIndex = pos.getWidth() + spacing;
 						if (nextIndex < MazeDisplay.maze.getConfiguration().getWidth()) {
-							newPos.setWidth(nextIndex);
+							newPos.setWidth(nextIndex - spacing / 2);
 							if (MazeDisplay.maze.getCellValue(newPos) == 0) {
 								character.moveRight();
 							}
 						}
 						break;
 					case SWT.ARROW_LEFT:
-						nextIndex = pos.getWidth() - 1;
+						nextIndex = pos.getWidth() - spacing;
 						if (nextIndex >= 0) {
-							newPos.setWidth(nextIndex);
+							newPos.setWidth(nextIndex + spacing / 2);
 							if (MazeDisplay.maze.getCellValue(newPos) == 0) {
 								character.moveLeft();
 							}
 						}
 						break;
 					case SWT.ARROW_DOWN:
-						nextIndex = pos.getLength() + 1;
+						nextIndex = pos.getLength() + spacing;
 						if (nextIndex < MazeDisplay.maze.getConfiguration().getLength()) {
-							newPos.setLength(nextIndex);
+							newPos.setLength(nextIndex - spacing / 2);
 							if (MazeDisplay.maze.getCellValue(newPos) == 0) {
 								character.moveBackward();
 							}
@@ -112,9 +113,9 @@ public class MazeDisplay extends Canvas {
 						}
 						break;
 					case SWT.ARROW_UP:
-						nextIndex = pos.getLength() - 1;
+						nextIndex = pos.getLength() - spacing;
 						if (nextIndex >= 0) {
-							newPos.setLength(nextIndex);
+							newPos.setLength(nextIndex + spacing / 2);
 							if (MazeDisplay.maze.getCellValue(newPos) == 0) {
 								character.moveFarward();
 							}
@@ -122,27 +123,27 @@ public class MazeDisplay extends Canvas {
 						break;
 					// w
 					case 119:
-						nextIndex = pos.getHeight() + 1;
+						nextIndex = pos.getHeight() + spacing;
 						if (nextIndex < MazeDisplay.maze.getConfiguration().getHeight()) {
-							newPos.setHeight(nextIndex);
+							newPos.setHeight(nextIndex - spacing / 2);
 							if (MazeDisplay.maze.getCellValue(newPos) == 0) {
 								character.moveUp();
 								MazeDisplay.mazeData = MazeDisplay.maze
-										.getCrossSectionByZ(character.getPos().getHeight());
-								MazeDisplay.currentHeight++;
+										.getCrossSectionByZ(character.getRealPos().getHeight());
+								MazeDisplay.currentHeight = MazeDisplay.currentHeight + spacing;
 							}
 						}
 						break;
 					// s
 					case 115:
-						nextIndex = pos.getHeight() - 1;
+						nextIndex = pos.getHeight() - spacing;
 						if (nextIndex >= 0) {
-							newPos.setHeight(nextIndex);
+							newPos.setHeight(nextIndex + spacing / 2);
 							if (MazeDisplay.maze.getCellValue(newPos) == 0) {
 								character.moveDown();
 								MazeDisplay.mazeData = MazeDisplay.maze
-										.getCrossSectionByZ(character.getPos().getHeight());
-								MazeDisplay.currentHeight--;
+										.getCrossSectionByZ(character.getRealPos().getHeight());
+								MazeDisplay.currentHeight = MazeDisplay.currentHeight - spacing;
 							}
 						}
 						break;
@@ -174,19 +175,22 @@ public class MazeDisplay extends Canvas {
 
 					int width = getSize().x;
 					int height = getSize().y;
-
-					int w = width / MazeDisplay.mazeData[0].length;
-					int h = height / MazeDisplay.mazeData.length;
 					
-					Color backgorundColor = display.getSystemColor(SWT.COLOR_CYAN);
+					Double wTemp = ((width / MazeDisplay.mazeData[0].length) * 1.5);
+					Double hTemp = ((height / MazeDisplay.mazeData.length) * 1.5);
+					
+					int w = (width / MazeDisplay.mazeData[0].length);
+					int h = (height / MazeDisplay.mazeData.length);
+					
+					Color backgroundColor = display.getSystemColor(SWT.COLOR_CYAN);
 
 					for (int i = 0; i < MazeDisplay.mazeData.length; i++) {
 						for (int j = 0; j < MazeDisplay.mazeData[i].length; j++) {
 							//e.gc.setBackground(white);
-							backgorundColor = white;
+							backgroundColor = white;
 
-							int x = j * w;
-							int y = i * h;
+							int x = j / 2 * w;
+							int y = i / 2 * h;
 							Position currPosition = new Position(MazeDisplay.currentHeight, i, j);
 
 							if (MazeDisplay.maze.getCellValue(currPosition) == 0) {
@@ -205,51 +209,54 @@ public class MazeDisplay extends Canvas {
 									lowerCellValue = MazeDisplay.maze.getCellValue(lowerPos);
 									if (higherCellValue == 0 && lowerCellValue == 0) {
 										//e.gc.setBackground(green);
-										backgorundColor = green;
+										backgroundColor = green;
 									} else if (higherCellValue == 0) {
 										//e.gc.setBackground(blue);
-										backgorundColor = blue;
+										backgroundColor = blue;
 									} else if (lowerCellValue == 0) {
 										//e.gc.setBackground(yellow);
-										backgorundColor = yellow;
+										backgroundColor = yellow;
 									}
 								} else if (higherPos.getHeight() < MazeDisplay.maze.getConfiguration().getHeight()) {
 									higherCellValue = MazeDisplay.maze.getCellValue(higherPos);
 									if (higherCellValue == 0) {
 										//e.gc.setBackground(blue);
-										backgorundColor = blue;
+										backgroundColor = blue;
 									}
 								} else if (lowerPos.getHeight() >= 0) {
 									lowerCellValue = MazeDisplay.maze.getCellValue(lowerPos);
 									if (lowerCellValue == 0) {
 										//e.gc.setBackground(yellow);
-										backgorundColor = yellow;
+										backgroundColor = yellow;
 									}
 								} else {
 									//e.gc.setBackground(white);
-									backgorundColor = white;
+									backgroundColor = white;
 								}
 							} else {
 								//e.gc.setBackground(black);
-								backgorundColor = black;
+								backgroundColor = black;
 							}
 
 							if (currPosition.equals(MazeDisplay.maze.getGoalPosition())) {
 								//e.gc.setBackground(red);
-								backgorundColor = red;
+								backgroundColor = red;
 							}
-
 							
-							e.gc.setBackground(backgorundColor);
+							e.gc.setBackground(backgroundColor);
 							
-							e.gc.fillRectangle(x, y, w, h);
+							if(i % 2 == 0 && j % 2 == 0){
+								e.gc.fillRectangle(x, y, w, h);	
+								
+								drawBoundaries(x, y, w, h, display, e, currPosition);
+							}
 							
 							/*e.gc.setBackground(black);
 							e.gc.fillRectangle(x, y, w, h / 20);
 							e.gc.fillRectangle(x, y, w / 20, h);
 							e.gc.setBackground(white);*/
 							
-							drawBoundaries(x, y, w, h, display, e, currPosition);
+							
 
 							if (MazeDisplay.displaySolution) {
 								for (State<Position> state : sol.getStates()) {
@@ -258,7 +265,7 @@ public class MazeDisplay extends Canvas {
 										Position pos = state.getCameFrom().getValue();
 										if (pos != null) {
 											//if (currPosition.equals(pos)) {
-											if(character.getPos().equals(pos)){
+											if(character.getRealPos().equals(pos)){
 												System.out.println("solution position...");
 												Position nextStep = state.getValue();
 												String direction = "";
@@ -283,7 +290,9 @@ public class MazeDisplay extends Canvas {
 								}
 							}
 
-							if (MazeDisplay.maze.getGoalPosition().equals(character.getPos())) {
+							if (MazeDisplay.maze.getGoalPosition().equals(character.getRealPos())) {
+								System.out.println("game over");
+								
 								MazeDisplay.freezeMaze = true;
 
 								Notification note = new Notification(false,
