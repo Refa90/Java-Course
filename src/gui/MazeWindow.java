@@ -27,6 +27,7 @@ import algorithms.mazeGenerators.Position;
 import algorithms.search.Solution;
 import general.NotificationParam;
 import general.ThreadsManager;
+import presneter.PropertiesManager;
 
 public class MazeWindow extends BaseWindow implements Observer {
 
@@ -86,15 +87,23 @@ public class MazeWindow extends BaseWindow implements Observer {
 			
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
-				System.out.println("generate maze");
-				List<Button> buttons = new ArrayList<>();
-				buttons.add(btnSaveMaze);
-				buttons.add(btnLoadMaze);
-				buttons.add(btnSolveMaze);
-				buttons.add(btnDisplayMazeSolution);
-				
-				GenerateMazeWindow win = new GenerateMazeWindow(observable, buttons);				
-				win.start(display);
+				if(PropertiesManager.getInstance().getProps() != null){
+					System.out.println("generate maze");
+					List<Button> buttons = new ArrayList<>();
+					buttons.add(btnSaveMaze);
+					buttons.add(btnLoadMaze);
+					buttons.add(btnSolveMaze);
+					buttons.add(btnDisplayMazeSolution);
+					
+					GenerateMazeWindow win = new GenerateMazeWindow(observable, buttons);				
+					win.start(display);	
+				}else{
+					MessageBox mb = new MessageBox(shell);
+					mb.setText("Invalid properties");
+					mb.setMessage("Invalid properites. please load / create new");
+					
+					mb.open();
+				}
 			}
 			
 			@Override
@@ -191,7 +200,7 @@ public class MazeWindow extends BaseWindow implements Observer {
 
 		MenuItem fileMenuHeader, helpMenuHeader;
 
-		MenuItem fileExitItem, fileSaveItem, helpGetHelpItem, fileOpenPropertiesItem;
+		MenuItem fileExitItem, fileEditPropsItem, helpGetHelpItem, fileOpenPropertiesItem;
 
 		Label label;
 		
@@ -206,8 +215,21 @@ public class MazeWindow extends BaseWindow implements Observer {
 	    fileMenu = new Menu(shell, SWT.DROP_DOWN);
 	    fileMenuHeader.setMenu(fileMenu);
 
-	    fileSaveItem = new MenuItem(fileMenu, SWT.PUSH);
-	    fileSaveItem.setText("&Save");
+	    fileEditPropsItem = new MenuItem(fileMenu, SWT.PUSH);
+	    fileEditPropsItem.setText("&Edit Properties");
+	    fileEditPropsItem.addSelectionListener(new SelectionListener(){
+	    	@Override
+	    	public void widgetSelected(SelectionEvent e) {
+	    		PropertiesWindow window = new PropertiesWindow(observable);
+	    		
+	    		window.start(display);
+	    	}
+	    	
+	    	@Override
+	    	public void widgetDefaultSelected(SelectionEvent e) {
+	    		
+	    	}
+	    });
 	    
 	    fileOpenPropertiesItem = new MenuItem(fileMenu, SWT.PUSH);
 	    fileOpenPropertiesItem.setText("&Open properties");

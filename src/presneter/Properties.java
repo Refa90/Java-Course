@@ -10,6 +10,36 @@ import java.io.FileOutputStream;
 import java.io.Serializable;
 
 public class Properties implements Serializable{
+	private int numOfThreads;
+	private int solveMazeAlgorithmId;
+	private int generateMazeAlgorithmId;
+	
+	
+	
+	public int getNumOfThreads() {
+		return numOfThreads;
+	}
+
+	public void setNumOfThreads(int numOfThreads) {
+		this.numOfThreads = numOfThreads;
+	}
+
+	public int getSolveMazeAlgorithmId() {
+		return solveMazeAlgorithmId;
+	}
+
+	public void setSolveMazeAlgorithmId(int solveMazeAlgorithmId) {
+		this.solveMazeAlgorithmId = solveMazeAlgorithmId;
+	}
+
+	public int getGenerateMazeAlgorithmId() {
+		return generateMazeAlgorithmId;
+	}
+
+	public void setGenerateMazeAlgorithmId(int generateMazeAlgorithmId) {
+		this.generateMazeAlgorithmId = generateMazeAlgorithmId;
+	}
+
 	public void XMLSerilaize(String filePath){
 		XMLEncoder encoder=null;
 		try{

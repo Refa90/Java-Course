@@ -66,9 +66,10 @@ public class GenerateMazeWindow extends DialogWindow {
 		Label lblAlgName = new Label(shell, SWT.NONE);
 		lblAlgName.setText("Choose Algorithm: ");
 		
-		Combo comboDropDown = new Combo(shell, SWT.DROP_DOWN | SWT.BORDER);
+		Combo comboDropDown = new Combo(shell, SWT.DROP_DOWN | SWT.BORDER | SWT.READ_ONLY);
 		comboDropDown.add("Simple maze generator");
 		comboDropDown.add("Growing tree generator");
+		comboDropDown.select(0);
 					
 		Button btnGenerateMaze = new Button(shell, SWT.PUSH);
 		shell.setDefaultButton(btnGenerateMaze);
