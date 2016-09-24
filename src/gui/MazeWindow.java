@@ -3,6 +3,7 @@ package gui;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
+import java.util.Observer;
 import java.util.concurrent.Callable;
 
 import org.eclipse.swt.SWT;
@@ -27,7 +28,7 @@ import algorithms.search.Solution;
 import general.NotificationParam;
 import general.ThreadsManager;
 
-public class MazeWindow extends BaseWindow {
+public class MazeWindow extends BaseWindow implements Observer {
 
 	private MazeDisplay mazeDisplay;
 	private Observable observable;
@@ -42,19 +43,11 @@ public class MazeWindow extends BaseWindow {
 	Button btnSaveMaze = null;
 	Button btnLoadMaze = null;
 	Button btnDisplayMazeSolution = null;
-	private static Label lblNextStep = null;
+	private Label lblNextStep = null;
 	
 	
 	@Override
 	protected void initWidgets() {
-		
-		/*Composite solution = new Composite(shell, SWT.NONE);
-		RowLayout rowLayoutHorizontal = new RowLayout(SWT.HORIZONTAL);
-		solution.setLayout(rowLayoutHorizontal);
-		solution.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_CENTER));
-		
-		Button x = new Button(solution, SWT.PUSH);
-		x.setText("solution");*/
 		
 		GridLayout grid = new GridLayout(2, false);
 		shell.setLayout(grid);
@@ -65,6 +58,29 @@ public class MazeWindow extends BaseWindow {
 		
 		Button btnGenerateMaze = new Button(buttons, SWT.PUSH);
 		btnGenerateMaze.setText("Generate maze");
+		
+		btnSolveMaze = new Button(buttons, SWT.PUSH);
+		btnSolveMaze.setText("Solve maze");
+		btnSolveMaze.setVisible(false);
+		
+		
+		btnDisplayMazeSolution = new Button(buttons, SWT.PUSH);
+		btnDisplayMazeSolution.setText("Display Maze solution guidance");
+		btnDisplayMazeSolution.setVisible(false);
+		
+		btnSaveMaze = new Button(buttons, SWT.PUSH);
+		btnSaveMaze.setText("save maze");
+		btnSaveMaze.setVisible(false);
+		
+		btnLoadMaze = new Button(buttons, SWT.PUSH);
+		btnLoadMaze.setText("load maze");
+		btnLoadMaze.setVisible(false);
+		
+		Button b = new Button(buttons, SWT.PUSH);
+		b.setText("                                                                      ");
+		b.setEnabled(false);
+		b.setVisible(false);
+		
 		
 		btnGenerateMaze.addSelectionListener(new SelectionListener() {
 			
@@ -89,9 +105,7 @@ public class MazeWindow extends BaseWindow {
 			}
 		});
 		
-		btnSolveMaze = new Button(buttons, SWT.PUSH);
-		btnSolveMaze.setText("Solve maze");
-		btnSolveMaze.setVisible(false);
+		
 		
 		btnSolveMaze.addSelectionListener(new SelectionListener() {
 			
@@ -107,16 +121,14 @@ public class MazeWindow extends BaseWindow {
 
 			}
 		});
-		
-		btnDisplayMazeSolution = new Button(buttons, SWT.PUSH);
-		btnDisplayMazeSolution.setText("Display Maze solution guidance");
-		btnDisplayMazeSolution.setVisible(false);
-		
+	
 		btnDisplayMazeSolution.addSelectionListener(new SelectionListener() {
 			
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				System.out.println("display maze solution");
+				
+				b.setVisible(true);
 				
 				String mazeName = "maze";
 				
@@ -131,10 +143,6 @@ public class MazeWindow extends BaseWindow {
 			}
 		});
 		
-		
-		btnSaveMaze = new Button(buttons, SWT.PUSH);
-		btnSaveMaze.setText("save maze");
-		btnSaveMaze.setVisible(false);
 		
 		btnSaveMaze.addSelectionListener(new SelectionListener() {
 			
@@ -153,10 +161,7 @@ public class MazeWindow extends BaseWindow {
 			}
 		});
 		
-		btnLoadMaze = new Button(buttons, SWT.PUSH);
-		btnLoadMaze.setText("load maze");
-		btnLoadMaze.setVisible(false);
-		
+
 		btnLoadMaze.addSelectionListener(new SelectionListener() {
 			
 			@Override
@@ -174,16 +179,7 @@ public class MazeWindow extends BaseWindow {
 			}
 		});
 		
-		Label lblSolution = new Label(buttons, SWT.PUSH);
-		lblSolution.setText("Solution next step:");
-		lblSolution.setBounds(shell.getClientArea());
-	    
-	    lblNextStep = new Label(buttons, SWT.PUSH);
-	    lblNextStep.setText("Go left!");
-	    lblNextStep.setBounds(shell.getClientArea());
-	    //lblNextStep.setLayoutData((new GridData(SWT.FILL, SWT.CENTER, true, false)));
-		
-		mazeDisplay = new MazeDisplay(shell, SWT.BORDER);	
+		mazeDisplay = new MazeDisplay(shell, SWT.BORDER, b);	
 		mazeDisplay.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		mazeDisplay.setFocus();
 		
@@ -273,8 +269,14 @@ public class MazeWindow extends BaseWindow {
 		this.mazeDisplay.setMaze(maze);
 	}
 	
-	public static void SetNextStep(String direction){
+	public void SetNextStep(String direction){
 		lblNextStep.setText("Go " + direction + "!");
+	}
+
+	@Override
+	public void update(Observable arg0, Object arg1) {
+		String direction = arg1.toString();
+		SetNextStep(direction);
 	}
 }
 
