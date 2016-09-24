@@ -35,7 +35,7 @@ public class MazeDisplay extends Canvas {
 	private Character character;
 	private static Solution<Position> sol;
 	private static Boolean freezeMaze = false;
-	private static String step = "?";
+	private static String step = "";
 
 	public void setMaze(Maze3d maze) {
 		MazeDisplay.maze = maze;
@@ -177,10 +177,13 @@ public class MazeDisplay extends Canvas {
 
 					int w = width / MazeDisplay.mazeData[0].length;
 					int h = height / MazeDisplay.mazeData.length;
+					
+					Color backgorundColor = display.getSystemColor(SWT.COLOR_CYAN);
 
 					for (int i = 0; i < MazeDisplay.mazeData.length; i++) {
 						for (int j = 0; j < MazeDisplay.mazeData[i].length; j++) {
-							e.gc.setBackground(white);
+							//e.gc.setBackground(white);
+							backgorundColor = white;
 
 							int x = j * w;
 							int y = i * h;
@@ -201,34 +204,52 @@ public class MazeDisplay extends Canvas {
 									higherCellValue = MazeDisplay.maze.getCellValue(higherPos);
 									lowerCellValue = MazeDisplay.maze.getCellValue(lowerPos);
 									if (higherCellValue == 0 && lowerCellValue == 0) {
-										e.gc.setBackground(green);
+										//e.gc.setBackground(green);
+										backgorundColor = green;
 									} else if (higherCellValue == 0) {
-										e.gc.setBackground(blue);
+										//e.gc.setBackground(blue);
+										backgorundColor = blue;
 									} else if (lowerCellValue == 0) {
-										e.gc.setBackground(yellow);
+										//e.gc.setBackground(yellow);
+										backgorundColor = yellow;
 									}
 								} else if (higherPos.getHeight() < MazeDisplay.maze.getConfiguration().getHeight()) {
 									higherCellValue = MazeDisplay.maze.getCellValue(higherPos);
 									if (higherCellValue == 0) {
-										e.gc.setBackground(blue);
+										//e.gc.setBackground(blue);
+										backgorundColor = blue;
 									}
 								} else if (lowerPos.getHeight() >= 0) {
 									lowerCellValue = MazeDisplay.maze.getCellValue(lowerPos);
 									if (lowerCellValue == 0) {
-										e.gc.setBackground(yellow);
+										//e.gc.setBackground(yellow);
+										backgorundColor = yellow;
 									}
 								} else {
-									e.gc.setBackground(white);
+									//e.gc.setBackground(white);
+									backgorundColor = white;
 								}
 							} else {
-								e.gc.setBackground(black);
+								//e.gc.setBackground(black);
+								backgorundColor = black;
 							}
 
 							if (currPosition.equals(MazeDisplay.maze.getGoalPosition())) {
-								e.gc.setBackground(red);
+								//e.gc.setBackground(red);
+								backgorundColor = red;
 							}
 
+							
+							e.gc.setBackground(backgorundColor);
+							
 							e.gc.fillRectangle(x, y, w, h);
+							
+							/*e.gc.setBackground(black);
+							e.gc.fillRectangle(x, y, w, h / 20);
+							e.gc.fillRectangle(x, y, w / 20, h);
+							e.gc.setBackground(white);*/
+							
+							drawBoundaries(x, y, w, h, display, e, currPosition);
 
 							if (MazeDisplay.displaySolution) {
 								for (State<Position> state : sol.getStates()) {
@@ -254,10 +275,6 @@ public class MazeDisplay extends Canvas {
 												} else if (nextStep.getWidth() < pos.getWidth()) {
 													direction = "left";
 												}
-
-												//MazeWindow.SetNextStep(direction);
-												
-												//o.notifyObservers(direction);
 												
 												MazeDisplay.step = direction;
 											}
@@ -305,9 +322,7 @@ public class MazeDisplay extends Canvas {
 						 * msg.open(); }
 						 */
 						
-						//if(MazeDisplay.step != null){
-							b.setText("Solution next step: Go " + MazeDisplay.step);	
-						//}
+						b.setText("Solution next step: Go " + MazeDisplay.step);	
 						
 					}
 				});
@@ -316,6 +331,50 @@ public class MazeDisplay extends Canvas {
 		};
 		Timer timer = new Timer();
 		timer.scheduleAtFixedRate(task, 0, 1000);
+	}
+	
+	private void drawBoundaries(int x, int y, int w, int h,Display display, PaintEvent e, Position currPosition){
+		Color black = display.getSystemColor(SWT.COLOR_BLACK);
+		Color white = display.getSystemColor(SWT.COLOR_WHITE);
+		
+		e.gc.setBackground(black);
+		
+		Position temp = null;
+		
+		//check farward cell
+		temp = new Position(currPosition);
+		temp.setLength(temp.getLength() + 1);
+		if(temp.getLength() < maze.getConfiguration().getLength() && maze.getCellValue(temp) == 1){
+			e.gc.fillRectangle(x, y + h - 10, w, 10);
+		}
+		
+		//check backward cell
+		temp = new Position(currPosition);
+		temp.setLength(temp.getLength() - 1);
+		if(temp.getLength() >= 0 && maze.getCellValue(temp) == 1){
+			e.gc.fillRectangle(x, y, w, 10);
+		}
+		
+		//check right cell
+		temp = new Position(currPosition);
+		temp.setWidth(temp.getWidth() + 1);
+		if(temp.getWidth() < maze.getConfiguration().getWidth() && maze.getCellValue(temp) == 1){
+			e.gc.fillRectangle(x + w - 10, y, 10, h);
+		}
+		
+		//check left cell
+		temp = new Position(currPosition);
+		temp.setWidth(temp.getWidth() - 1);
+		if(temp.getWidth() >= 0 && maze.getCellValue(temp) == 1){
+			e.gc.fillRectangle(x, y, 10 , h);
+		}
+		
+		
+		//e.gc.fillRectangle(x, y, w, h / 20);
+		//e.gc.fillRectangle(x, y, w / 20, h);
+		e.gc.setBackground(white);
+		
+		
 	}
 
 }

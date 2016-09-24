@@ -25,7 +25,7 @@ public class Character {
 	
 	public void draw(int cellWidth, int cellHeight, GC gc) {
 		gc.drawImage(img, 0, 0, img.getBounds().width, img.getBounds().height, 
-				cellWidth * pos.getWidth(), cellHeight * pos.getLength(), cellWidth, cellHeight);
+				cellWidth * pos.getWidth() + 15, cellHeight * pos.getLength() + 15, cellWidth - 30, cellHeight - 30);
 	}
 	
 	public void moveRight() {
