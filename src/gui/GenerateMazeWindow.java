@@ -17,6 +17,7 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Text;
 
 import general.NotificationParam;
+import presneter.PropertiesManager;
 
 public class GenerateMazeWindow extends DialogWindow {
 	
@@ -69,7 +70,7 @@ public class GenerateMazeWindow extends DialogWindow {
 		Combo comboDropDown = new Combo(shell, SWT.DROP_DOWN | SWT.BORDER | SWT.READ_ONLY);
 		comboDropDown.add("Simple maze generator");
 		comboDropDown.add("Growing tree generator");
-		comboDropDown.select(0);
+		comboDropDown.select(PropertiesManager.getInstance().getProps().getGenerateMazeAlgorithmId());
 					
 		Button btnGenerateMaze = new Button(shell, SWT.PUSH);
 		shell.setDefaultButton(btnGenerateMaze);

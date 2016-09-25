@@ -13,7 +13,7 @@ public class NotificationQueue<T> {
 		queue = new PriorityQueue<T>();
 	}
 	
-	public static<T> NotificationQueue<T> GetInstance(){
+	public static<T> NotificationQueue<T> getInstance(){
 		if(instance == null){
 			synchronized(locker){
 				if(instance == null){

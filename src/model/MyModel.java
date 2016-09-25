@@ -21,8 +21,11 @@ import algorithms.search.Solution;
 import general.NotificationParam;
 import general.ThreadsManager;
 import gui.Notification;
+import gui.NotificationQueue;
 import io.MyCompressorOutputStream;
 import io.MyDecompressionInputStream;
+import presneter.Properties;
+import presneter.PropertiesManager;
 
 public class MyModel extends Observable implements Model {
 
@@ -242,6 +245,44 @@ public class MyModel extends Observable implements Model {
 
 		notifyObservers(param);
 	}
+	
+	@Override
+	public void saveProperties(Properties props, String filePath) {
+		String fullPath = System.getProperty("user.dir") + "\\" + "properties";
+		
+		File folderFile = new File(filePath);
+
+		if (!folderFile.exists()) {
+			folderFile.mkdir();
+		}
+		
+		fullPath = fullPath + "\\" + filePath;
+		
+		File fullFile = new File(fullPath);
+		
+		if(fullFile.exists()){
+			fullFile.delete();
+		}
+					
+		PropertiesManager.getInstance().saveProperties(fullPath, props);
+	}
+	
+	@Override
+	public void loadProperties(String filePath) {
+		String folderPath = System.getProperty("user.dir") + "\\" + "properties";
+		
+		File folderFile = new File(folderPath);
+
+		if (folderFile.exists()) {
+			String fullPath = folderPath + "\\props.xml";
+			
+			PropertiesManager.getInstance().loadProperties(fullPath );		
+		}else{
+			Notification note = new Notification(true, "No properties files exist, please create one first");
+			
+			NotificationQueue.getInstance().add(note);
+		}
+	}
 
 	@Override
 	public void terminate() {
@@ -258,4 +299,6 @@ public class MyModel extends Observable implements Model {
 		super.setChanged();
 		super.notifyObservers(arg);
 	}
+	
+	
 }

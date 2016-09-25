@@ -17,6 +17,7 @@ import algorithms.search.BFS;
 import algorithms.search.CommonSearcher;
 import algorithms.search.DFS;
 import general.NotificationParam;
+import presneter.PropertiesManager;
 
 public class SolveMazeWindow extends DialogWindow {
 
@@ -45,6 +46,7 @@ public class SolveMazeWindow extends DialogWindow {
 		Combo comboDropDown = new Combo(shell, SWT.DROP_DOWN | SWT.BORDER);
 		comboDropDown.add("BFS");
 		comboDropDown.add("DFS");
+		comboDropDown.select(PropertiesManager.getInstance().getProps().getSolveMazeAlgorithmId());
 
 		Button btnSolveMaze = new Button(shell, SWT.PUSH);
 		shell.setDefaultButton(btnSolveMaze);

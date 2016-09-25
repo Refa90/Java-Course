@@ -56,6 +56,10 @@ public class Properties implements Serializable{
 		
 	}
 	
+	public Properties(){
+		
+	}
+	
 	private void XMLDeserialize(String filePath){
 		XMLDecoder decoder=null;
 		

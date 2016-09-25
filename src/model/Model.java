@@ -6,6 +6,7 @@ import java.io.IOException;
 import algorithms.mazeGenerators.Maze3dGenerator;
 import algorithms.mazeGenerators.Position;
 import algorithms.search.CommonSearcher;
+import presneter.Properties;
 
 public interface Model {
 	void getDirContent(String path) throws IOException;
@@ -23,6 +24,10 @@ public interface Model {
 	 void solve(String mazeName, CommonSearcher<Position> searcher);
 	 
 	 void displaySolution(String mazeName);
+	 
+	 void saveProperties(Properties props, String filePath);
+	 
+	 void loadProperties(String filePath);
 	 
 	 void terminate();
 }

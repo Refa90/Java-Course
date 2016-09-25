@@ -27,6 +27,7 @@ import algorithms.mazeGenerators.Position;
 import algorithms.search.Solution;
 import general.NotificationParam;
 import general.ThreadsManager;
+import presneter.Properties;
 import presneter.PropertiesManager;
 
 public class MazeWindow extends BaseWindow implements Observer {
@@ -231,7 +232,7 @@ public class MazeWindow extends BaseWindow implements Observer {
 	    	}
 	    });
 	    
-	    fileOpenPropertiesItem = new MenuItem(fileMenu, SWT.PUSH);
+	    /*fileOpenPropertiesItem = new MenuItem(fileMenu, SWT.PUSH);
 	    fileOpenPropertiesItem.setText("&Open properties");
 	    fileOpenPropertiesItem.addSelectionListener(new SelectionListener() {
 			
@@ -246,7 +247,7 @@ public class MazeWindow extends BaseWindow implements Observer {
 				// TODO Auto-generated method stub
 				
 			}
-		});
+		});*/
 
 	    fileExitItem = new MenuItem(fileMenu, SWT.PUSH);
 	    fileExitItem.setText("E&xit");
@@ -280,7 +281,7 @@ public class MazeWindow extends BaseWindow implements Observer {
 	
 	public void displayNotification(String content){
 		Notification notification = new Notification(false, content);
-		NotificationQueue.GetInstance().add(notification);
+		NotificationQueue.getInstance().add(notification);
 	}
 	
 	public void displaySolution(Solution<Position> sol){

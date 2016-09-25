@@ -18,6 +18,8 @@ import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Shell;
 
 import algorithms.mazeGenerators.Maze3d;
 import algorithms.mazeGenerators.Position;
@@ -279,7 +281,7 @@ public class MazeDisplay extends Canvas {
 
 								Notification note = new Notification(false,
 										"Congratulations! you have solved the maze!");
-								NotificationQueue.GetInstance().add(note);
+								NotificationQueue.getInstance().add(note);
 							}
 						}
 					}
@@ -299,18 +301,19 @@ public class MazeDisplay extends Canvas {
 					public void run() {
 						redraw();
 
-						/*
-						 * Notification notification =
-						 * (Notification)NotificationQueue.GetInstance().poll();
-						 * 
-						 * if(notification != null){ MessageBox msg = new
-						 * MessageBox(new Shell(), SWT.OK);
-						 * if(notification.getIsError()){ msg.setText("Error");
-						 * }else{ msg.setText("Notification"); }
-						 * 
-						 * msg.setMessage(notification.getContent());
-						 * msg.open(); }
-						 */
+						Notification notification = (Notification) NotificationQueue.getInstance().poll();
+
+						if (notification != null) {
+							MessageBox msg = new MessageBox(new Shell(), SWT.OK);
+							if (notification.getIsError()) {
+								msg.setText("Error");
+							} else {
+								msg.setText("Notification");
+							}
+
+							msg.setMessage(notification.getContent());
+							msg.open();
+						}
 
 						b.setText("Solution next step: Go " + MazeDisplay.step);
 

@@ -85,6 +85,10 @@ public class Presenter implements Observer {
 		//exit
 		map.put("exit", new ExitCommand(this.model));
 		
+		map.put("save_properties", new SavePropertiesCommand(this.model));
+		
+		map.put("load_properties", new LoadPropertiesCommand(this.model));
+		
 		this.modelMap = map;
 	}
 	
@@ -98,7 +102,7 @@ public class Presenter implements Observer {
 		if(commandName.equals("error")){
 			Notification notification = (Notification)notParam.getArg();
 			
-			NotificationQueue.GetInstance().add(notification);
+			NotificationQueue.getInstance().add(notification);
 		}else{
 			Command command = null;
 			

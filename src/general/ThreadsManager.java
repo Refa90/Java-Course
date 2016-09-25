@@ -7,6 +7,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import presneter.PropertiesManager;
+
 public class ThreadsManager {
 	private static ThreadsManager instance;
 	private static Object locker = new Object();
@@ -25,7 +27,7 @@ public class ThreadsManager {
 	}
 	
 	private ThreadsManager(){
-		executor = Executors.newFixedThreadPool(5);
+		executor = Executors.newFixedThreadPool(PropertiesManager.getInstance().getProps().getNumOfThreads());
 	}
 		
 	public <T> Future<T> RegisterCallable(Callable<T> callable){
