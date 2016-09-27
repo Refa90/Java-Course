@@ -177,9 +177,6 @@ public class MazeDisplay extends Canvas {
 					int width = getSize().x;
 					int height = getSize().y;
 
-					Double wTemp = ((width / MazeDisplay.mazeData[0].length) * 1.5);
-					Double hTemp = ((height / MazeDisplay.mazeData.length) * 1.5);
-
 					int w = (width / MazeDisplay.mazeData[0].length);
 					int h = (height / MazeDisplay.mazeData.length);
 
@@ -316,10 +313,12 @@ public class MazeDisplay extends Canvas {
 						}
 
 						b.setText("Solution next step: Go " + MazeDisplay.step);
-
+						
+						if(MazeDisplay.freezeMaze){
+							cancel();
+						}
 					}
 				});
-
 			}
 		};
 		Timer timer = new Timer();

@@ -5,7 +5,10 @@
    <int>1</int>
   </void>
   <void property="numOfThreads">
-   <int>876</int>
+   <int>5</int>
+  </void>
+  <void property="solveMazeAlgorithmId">
+   <int>1</int>
   </void>
  </object>
 </java>
