@@ -332,13 +332,40 @@ public class MyModel extends Observable implements Model {
 	 * */
 	@Override
 	public void saveProperties(Properties props, String filePath) {
-		String fullPath = System.getProperty("user.dir") + "\\" + "properties";
+		String fullPath = System.getProperty("user.dir") + "\\" + "src";
 		
-		File folderFile = new File(filePath);
+		/*File folderFile = new File(fullPath);
 
 		if (!folderFile.exists()) {
 			folderFile.mkdir();
+		}*/
+		
+		fullPath = fullPath + "\\" + filePath;
+		
+		File fullFile = new File(fullPath);
+		
+		if(fullFile.exists()){
+			boolean x = fullFile.delete();
+			
+			int y = 4;
 		}
+					
+		PropertiesManager.getInstance().saveProperties(filePath, props);
+	}
+	
+	/**
+	 * load properties object from a specific file path
+	 * @param filePath - the path of the file 
+	 * */
+	@Override
+	public void loadProperties(String filePath) {
+		String fullPath = System.getProperty("user.dir") + "\\" + "src";
+		
+		/*File folderFile = new File(fullPath);
+
+		if (!folderFile.exists()) {
+			folderFile.mkdir();
+		}*/
 		
 		fullPath = fullPath + "\\" + filePath;
 		
@@ -348,28 +375,7 @@ public class MyModel extends Observable implements Model {
 			fullFile.delete();
 		}
 					
-		PropertiesManager.getInstance().saveProperties(fullPath, props);
-	}
-	
-	/**
-	 * load properties object from a specific file path
-	 * @param filePath - the path of the file 
-	 * */
-	@Override
-	public void loadProperties(String filePath) {
-		String folderPath = System.getProperty("user.dir") + "\\" + "properties";
-		
-		File folderFile = new File(folderPath);
-
-		if (folderFile.exists()) {
-			String fullPath = folderPath + "\\props.xml";
-			
-			PropertiesManager.getInstance().loadProperties(fullPath );		
-		}else{
-			Notification note = new Notification(true, "No properties files exist, please create one first");
-			
-			NotificationQueue.getInstance().add(note);
-		}
+		PropertiesManager.getInstance().loadProperties(filePath);
 	}
 
 	/**

@@ -17,7 +17,21 @@ import view.ViewObservable;
 
 public class Run {
 	public static void main(String[] args){
-		runGUI();		
+		try {
+			runGUI();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+		
+		while(true){
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	public static void runCLI(){

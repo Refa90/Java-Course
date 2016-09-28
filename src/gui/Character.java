@@ -1,6 +1,9 @@
 package gui;
 
 import java.awt.Graphics;
+import java.io.File;
+
+import javax.imageio.ImageIO;
 
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
@@ -15,7 +18,10 @@ public class Character {
 	private int displaySpacing;
 	
 	public Character() {
-		img = new Image(null, "images/character.jpg");
+		//img = new Image(null, getClass().getClassLoader().getResourceAsStream("images/character.jpg"));
+		
+		img = new Image(null, getClass().getClassLoader().getResourceAsStream("character.jpg"));
+		
 		realSpacing = 2;
 		displaySpacing = 1;
 	}
