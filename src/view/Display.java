@@ -8,7 +8,7 @@ import algorithms.mazeGenerators.Position;
 import algorithms.search.Solution;
 
 public interface Display {
-	void display(String content);
+	/*void display(String content);
 	
 	void start();
 	
@@ -32,5 +32,5 @@ public interface Display {
 	
 	void terminate();
 	
-	void addObserver(Observer o);
+	void addObserver(Observer o);*/
 }

@@ -14,8 +14,6 @@ public class Properties implements Serializable{
 	private int solveMazeAlgorithmId;
 	private int generateMazeAlgorithmId;
 	
-	
-	
 	public int getNumOfThreads() {
 		return numOfThreads;
 	}
@@ -40,7 +38,7 @@ public class Properties implements Serializable{
 		this.generateMazeAlgorithmId = generateMazeAlgorithmId;
 	}
 
-	public void XMLSerilaize(String filePath){
+	/*public void XMLSerilaize(String filePath){
 		XMLEncoder encoder=null;
 		try{
 		encoder = new XMLEncoder(new BufferedOutputStream(new FileOutputStream(filePath)));
@@ -69,6 +67,5 @@ public class Properties implements Serializable{
 			System.out.println("ERROR: File: " + filePath + " not found");
 		}
 		Properties prop =(Properties)decoder.readObject();
-		
-	}
+	}*/
 }

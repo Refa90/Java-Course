@@ -15,7 +15,7 @@ public class LoadPropertiesCommand implements Command{
 	} 
 
 	@Override
-	public void doCommand(Object param) throws Exception { 
+	public void doCommand(Object param) throws Exception {
 		model.loadProperties("props.xml");	
 	}
 

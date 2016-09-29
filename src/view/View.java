@@ -2,6 +2,7 @@ package view;
 
 import java.io.File;
 import java.util.Map;
+import java.util.Observer;
 
 import algorithms.mazeGenerators.Maze3d;
 import algorithms.mazeGenerators.Position;
@@ -10,9 +11,9 @@ import general.Startable;
 import presneter.Command;
 
 public interface View extends Startable, Display {
-	//void setCommandsMap(Map<String, Command> map);
+	void display(String content);
 	
-	/*void display(String content);
+	void start();
 	
 	void displayDirContent(File[] files);
 	
@@ -22,11 +23,17 @@ public interface View extends Startable, Display {
 	
 	void notifyMazeGenerated(String mazeName);
 	
+	void displaySavedMaze(String mazeName, String fileName);
+	
+	void displayLoadMaze(String mazeName, String fileName);
+	
 	void displayCrossSection(byte[][] section);
 	
 	void notifyMazeSolutionReady(String mazeName);
 	
 	void displaySolution(Solution<Position> sol);
 	
-	void terminate();*/
+	void terminate();
+	
+	void addObserver(Observer o);
 }

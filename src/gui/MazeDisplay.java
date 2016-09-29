@@ -156,52 +156,6 @@ public class MazeDisplay extends Canvas {
 			}
 		});
 		
-		
-		this.addMouseListener(new MouseListener() {
-			
-			@Override
-			public void mouseUp(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-				int x = 4;
-				
-				int y = x;
-			}
-			
-			@Override
-			public void mouseDown(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-				int x = 41;
-				
-				int y = x;
-				
-			}
-			
-			@Override
-			public void mouseDoubleClick(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
-		
-		this.addMouseWheelListener(new MouseWheelListener() {
-			
-			@Override
-			public void mouseScrolled(MouseEvent e) {
-				int count = e.count;
-				
-				if(count > 0){
-					//if possible
-					moveUp();
-				}else{
-					//if possible
-					moveDown();
-				}
-			}
-			
-		});
-		
 		this.addPaintListener(new PaintListener() {
 
 			@Override

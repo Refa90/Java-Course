@@ -27,8 +27,6 @@ public class MyView extends Observable implements View, Observer {
 	/**
 	 * private member that holds pointer to the cli object, which will get the user input and process it
 	 * */
-	/*private CLI cli;
-	private GUI gui;*/
 	private View display;
 	
 	/**
@@ -42,8 +40,6 @@ public class MyView extends Observable implements View, Observer {
 	 * @param out - the output object
 	 * */
 	public MyView(BufferedReader in, PrintWriter out){
-		//cli = new CLI(in ,out);
-		//cli.addObserver(this);
 		
 		display = new GUI();
 		display.addObserver(this);

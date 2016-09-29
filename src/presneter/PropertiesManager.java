@@ -4,9 +4,11 @@ import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 
 import gui.Notification;
 import gui.NotificationQueue;
@@ -15,7 +17,7 @@ public class PropertiesManager {
 	private Properties props;
 	private static PropertiesManager instance;
 	private static Object locker = new Object();
-
+	
 	public Properties getProps() {
 		return props;
 	}
@@ -38,33 +40,60 @@ public class PropertiesManager {
 
 	public void saveProperties(String filePath, Properties props) {
 		XMLEncoder encoder = null;
+		
 		try {
-			encoder = new XMLEncoder(new BufferedOutputStream(new FileOutputStream("src\\" + filePath)));
+			String path = filePath;
 			
-			//encoder = new XMLEncoder(getClass().getClassLoader().getResourceAsStream(filePath)));
-
+			encoder = new XMLEncoder(new BufferedOutputStream(new FileOutputStream(path)));
+			
+			if(encoder != null){
+				
+				props.setGenerateMazeAlgorithmId(props.getGenerateMazeAlgorithmId() + 1);
+				props.setSolveMazeAlgorithmId(props.getSolveMazeAlgorithmId() + 1);
+			
+				try{
+					encoder.writeObject(props);
+					encoder.close();	
+					
+					this.props = props;
+				}catch(Exception ex){
+					Notification note = new Notification(true, "failed save file");
+					
+					NotificationQueue.getInstance().add(note);
+				}
+				
+				props.setGenerateMazeAlgorithmId(props.getGenerateMazeAlgorithmId() - 1);
+				props.setSolveMazeAlgorithmId(props.getSolveMazeAlgorithmId() - 1);
+			}
 		} catch (FileNotFoundException fileNotFound) {
-			System.out.println("ERROR: While Creating or Opening the File: " + filePath);
-		}
-		encoder.writeObject(props);
-		encoder.close();
-
-		this.props = props;
+			Notification note = new Notification(true, "failed save file");
+			
+			NotificationQueue.getInstance().add(note);
+		}	
 	}
 
 	public void loadProperties(String filePath) {
 		XMLDecoder decoder = null;
+	
+		InputStream stream = null;
+		try {
+			stream = new BufferedInputStream(new FileInputStream(filePath));
+			
+			decoder = new XMLDecoder(stream);
+			
+			Object result = decoder.readObject();
+			
+			decoder.close();
+			
+			this.props = (Properties) result;
+			
+			props.setGenerateMazeAlgorithmId(props.getGenerateMazeAlgorithmId() - 1);
+			props.setSolveMazeAlgorithmId(props.getSolveMazeAlgorithmId() - 1);
 
-		// decoder=new XMLDecoder(new BufferedInputStream(new
-		// FileInputStream(filePath)));
-
-		decoder = new XMLDecoder(getClass().getClassLoader().getResourceAsStream("src/" + filePath));
-
-		//Notification note = new Notification(true, "ERROR: File: " + filePath + " not found");
-
-		//NotificationQueue.getInstance().add(note);
-
-		this.props = (Properties) decoder.readObject();
+		} catch (FileNotFoundException e) {
+			Notification note = new Notification(true, "failed load file");
+			
+			NotificationQueue.getInstance().add(note);
+		}		
 	}
-
 }

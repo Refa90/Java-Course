@@ -332,40 +332,13 @@ public class MyModel extends Observable implements Model {
 	 * */
 	@Override
 	public void saveProperties(Properties props, String filePath) {
-		String fullPath = System.getProperty("user.dir") + "\\" + "src";
+		String fullPath = System.getProperty("user.dir") + "\\properties";
 		
-		/*File folderFile = new File(fullPath);
-
-		if (!folderFile.exists()) {
-			folderFile.mkdir();
-		}*/
+		File file = new File(fullPath);
 		
-		fullPath = fullPath + "\\" + filePath;
-		
-		File fullFile = new File(fullPath);
-		
-		if(fullFile.exists()){
-			boolean x = fullFile.delete();
-			
-			int y = 4;
+		if(!file.exists()){
+			file.mkdir();
 		}
-					
-		PropertiesManager.getInstance().saveProperties(filePath, props);
-	}
-	
-	/**
-	 * load properties object from a specific file path
-	 * @param filePath - the path of the file 
-	 * */
-	@Override
-	public void loadProperties(String filePath) {
-		String fullPath = System.getProperty("user.dir") + "\\" + "src";
-		
-		/*File folderFile = new File(fullPath);
-
-		if (!folderFile.exists()) {
-			folderFile.mkdir();
-		}*/
 		
 		fullPath = fullPath + "\\" + filePath;
 		
@@ -375,7 +348,28 @@ public class MyModel extends Observable implements Model {
 			fullFile.delete();
 		}
 					
-		PropertiesManager.getInstance().loadProperties(filePath);
+		PropertiesManager.getInstance().saveProperties(fullPath, props);
+	}
+	
+	/**
+	 * load properties object from a specific file path
+	 * @param filePath - the path of the file 
+	 * */
+	@Override
+	public void loadProperties(String filePath) {
+		String fullPath = System.getProperty("user.dir") + "\\properties";
+		
+		File file = new File(fullPath);
+		
+		if(!file.exists()){
+			file.mkdir();
+		}
+		
+		fullPath = fullPath + "\\" + filePath;
+		
+		File fullFile = new File(fullPath);
+					
+		PropertiesManager.getInstance().loadProperties(fullPath);
 	}
 
 	/**

@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.Graphics;
 import java.io.File;
+import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
@@ -18,9 +19,15 @@ public class Character {
 	private int displaySpacing;
 	
 	public Character() {
-		//img = new Image(null, getClass().getClassLoader().getResourceAsStream("images/character.jpg"));
+		String fullPath = System.getProperty("user.dir") + "\\images\\character.jpg";
 		
-		img = new Image(null, getClass().getClassLoader().getResourceAsStream("character.jpg"));
+		InputStream stream = getClass().getClassLoader().getResourceAsStream("src/images/character.jpg");
+		
+		//img = new Image(null, stream);
+		
+		img = new Image(null, "images/character.jpg");
+		
+		//img = new Image(null, getClass().getClassLoader().getResourceAsStream("character.jpg"));
 		
 		realSpacing = 2;
 		displaySpacing = 1;
